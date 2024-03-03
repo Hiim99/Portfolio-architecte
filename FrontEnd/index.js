@@ -2,19 +2,15 @@ const response = await fetch ("http://localhost:5678/api/works");
 const works = await response.json();
 const myLogin = document.querySelector("#login");
 myLogin.addEventListener("click" , function(event){
-    if (myLogin.innerHTML == "login"){
+    if (myLogin.innerText == "login"){
         window.location.href = "login.html"
-    }
-    if (myLogin.innerHTML == "logout"){
-       window.localStorage.removeItem('token')
-    }
-})
-onstorage = (event) => {
-    console.log("wiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
-};
-
+    }else if (myLogin.innerText == "logout") {
+        window.location.href = "index.html"
+        window.localStorage.removeItem('token')  
+    }  
+ })
+ 
 window.addEventListener("storage", (event) => {
-    console.log("heeeeloooooo vietnaaaam")
     checkToken();
 });
 checkToken();
@@ -84,10 +80,9 @@ function populateWorks(works){
 function checkToken(){
     const monToken = window.localStorage.getItem('token')
     if (monToken === null){
-        myLogin.innerHTML = 'login'
-        console.log('LOG IN')
+        myLogin.innerText = 'login'
     }else {
-        myLogin.innerHTML= "logout"
+        myLogin.innerText= "logout"
  
     }
 }
