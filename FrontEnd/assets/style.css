@@ -101,21 +101,18 @@ li:hover {
 }
 /* CSS pour la page de login*/
 
-
-#form {
-	width: 35%;
-    margin: auto;
-}
-#form > * {
+#login-form > * {
 	text-align: center;
 
 }
-#form{
+#login-form{
+	width: 35%;
+    margin: auto;
 	text-align: left;
 	display: flex;
 	flex-direction: column;
 }
-#form input{
+#login-form input{
 
 	height: 50px;
 	font-size: 1.2em;
@@ -123,7 +120,7 @@ li:hover {
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
 	
 }
-#form label {
+#login-form label {
 	margin: 2em 0 1em 0;
 	font-family:'Syne' ;
 	text-align: start;
@@ -146,6 +143,7 @@ li:hover {
 	text-align: center;
 	border-radius: 60px ;
 	box-shadow: none;
+	cursor: pointer;
 }
 .wrong-pass{
 	text-align: center;
@@ -219,7 +217,7 @@ li:hover {
 }
 #contact {
 	width: 50%;
-margin: auto;
+    margin: auto;
 }
 #contact > * {
 	text-align: center;
@@ -265,4 +263,200 @@ footer nav ul {
 	justify-content: flex-end;
 	margin: 2em
 }
+.modify{
+	text-decoration: none;
+	color: #1D6154;
+	font-size: 15px;
+	margin-left: 20px;
+}
 
+/* ************************************ La modale ************************************/
+
+.modal{
+	position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+	display: none;
+	
+}
+.modal-wrapper{
+	overflow: auto;
+	width : 30%;
+    height:520px;
+	padding: 20px;
+	background-color: #fff;
+	border-radius: 10px;
+}
+.fa-xmark{
+    margin-left: 97%;
+	cursor: pointer;
+}
+
+.modal-title{
+	font-family: Work Sans, 'Source Sans Pro';
+	font-weight: 400;
+	font-size: 20px;
+	color: #060606;
+	margin-top: 15px;
+	text-align: center;
+}
+.gallery-modal {
+	padding: 20px;
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+	grid-column-gap: 20px;
+	grid-row-gap: 20px;
+
+
+}
+.gallery-modal div{
+	position: relative;
+}
+.gallery-modal div img {
+	display: block;
+	width: 70px;
+	height: 90px;
+}
+.gallery-modal div .fa-solid {
+	position: absolute;
+	top:5px;
+	right:5px;
+	color: #f1f4f9;
+}
+.lign{
+	width: 70%;
+	color:#DCDCDC ;
+	margin-top: 30%;
+}
+.add-photo{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin:0 auto;
+	font-family: Syne, 'Source Sans Pro';;
+	font-weight: 700;
+	color: white;
+	background-color: #1D6154;
+	width: 200px;
+	height: 35px;
+	border-radius: 60px ;
+	cursor: pointer;
+}
+
+
+
+/********************* La modale ajout photo ***************************/
+
+.modal-add-photo{
+	position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+	display: none;
+	
+}
+.modal-add-photo-wrapper{
+	overflow: auto;
+	width : 30%;
+    height:520px;
+	padding: 20px;
+	background-color: #fff;
+	border-radius: 10px;
+}
+.close-back{
+	display: flex;
+	flex-direction: row;
+	font-size: 15px;
+	cursor: pointer;
+}
+.modal-add-photo-wrapper hr{
+    margin-top: 10%;
+}
+
+.add-photo-form {
+	width: 75%;
+    margin: auto;
+	text-align: left;
+	display: flex;
+	flex-direction: column;
+}
+.add-photo-form > * {
+	text-align: center;
+
+}
+.add-photo-form hr{
+	margin-top: 0%;
+}
+.add-photo-card{
+	margin-top: 25px;
+	display: flex;
+	flex-direction: column;
+	background-color:#e8f1f6;
+	width: 97%;
+	height: 100px;
+	padding: 10px 5px;
+	align-items: center;
+	justify-content: center;
+
+}
+.fa-image{
+	color: #cbd6db;;
+	font-size: 55px;
+
+}
+.add-photo-button{
+	border-radius: 30px;
+	background-color:#cbd6db;
+	align-items: center;
+	padding: 10px;
+	border: #DCDCDC;
+	width: 40%;
+	color: #2f6684;
+	cursor: pointer;
+}
+.add-photo-card p {
+	font-size: 10px;
+}
+.add-photo-form input{
+	height: 50px;
+	font-size: 1.2em;
+	border: none;
+	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+	
+}
+.add-photo-form label {
+	margin: 2em 0 1em 0;
+	text-align: start;
+}
+#categories-dropdown{
+	height: 50px;
+	font-size: 1.2em;
+	border: none;
+	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+}
+.validate-photo-btn{
+	border: #f1f4f9;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 0 auto;
+	font-family: Syne, 'Source Sans Pro';;
+	font-weight: 700;
+	color: white;
+	background-color:darkgray;
+	width: 200px;
+	height: 35px;
+	border-radius: 60px ;
+	cursor: pointer;
+}

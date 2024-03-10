@@ -9,7 +9,9 @@
 	<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap" rel="stylesheet">
 	<meta name="description" content="">
 	<link rel="stylesheet" href="./assets/style.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
     <script type="module" src="index.js"></script>
+	
 </head>
 <body>
 <header>
@@ -36,14 +38,51 @@
 		</article>
 	</section>
 	<section id="portfolio">
-		<h2>Mes Projets</h2>
+		<h2 id="projets">Mes Projets</h2>
 		<ul class="mesCategories">
 				<li><button data-id = "0">Tous</button></li> 		
 		</ul>
 	    <div class="gallery">
-			
+
 		</div>	
 	</section>
+	<aside class="modal" aria-hidden="true" role="dialog" aria-labelledby="modal-title">
+        <div class="modal-wrapper">
+			<i class="fa-solid fa-xmark"></i>
+            <h1 class="modal-title">Galerie photo</h1>
+            <div class="gallery-modal">
+                  
+            </div>	
+			<hr class="lign">
+            <button type="submit" class="add-photo"> Ajouter une photo</button>     
+        </div>
+    </aside>
+	<aside class="modal-add-photo" aria-hidden="true" role="dialog" aria-labelledby="modal-add-title">
+        <div class="modal-add-photo-wrapper">
+			<div class="close-back">
+			    <i class="fa-solid fa-arrow-left"></i> 
+				<i class="fa-solid fa-xmark"></i>
+			</div>
+            <h1 class="modal-title">Ajout photo</h1>
+			<form class="add-photo-form">
+				<div class="add-photo-card">
+					<i class="fa-regular fa-image"></i>
+                    <button class="add-photo-button"> + Ajouter photo </button>
+					<p>jpg,png : 4mo max</p>
+				</div>
+				<label for="title">Titre</label>
+				<input type="text" name="title" id="input-title">
+				<label for="title">Catégorie</label>
+				<select id="categories-dropdown" name="categories">
+					<option>
+
+					</option>
+				</select>
+			</form>
+			<hr class="lign">
+            <button type="submit" class="validate-photo-btn"> Valider</button>     
+        </div>
+    </aside>
 	<section id="contact">
 		<h2>Contact</h2>
 		<p>Vous avez un projet ? Discutons-en !</p>

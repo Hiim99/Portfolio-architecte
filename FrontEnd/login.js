@@ -1,9 +1,8 @@
 
 
-let myForm = document.getElementById("form");
+let myForm = document.getElementById("login-form");
 myForm.addEventListener("submit", async function(event){
    event.preventDefault();
-   console.log(myForm)
    
    let email = document.getElementById("email").value;
    let password = document.getElementById("password").value;

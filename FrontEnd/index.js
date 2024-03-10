@@ -9,7 +9,6 @@ myLogin.addEventListener("click" , function(event){
         window.localStorage.removeItem('token')  
     }  
  })
- 
 window.addEventListener("storage", (event) => {
     checkToken();
 });
@@ -33,6 +32,55 @@ for (let i = 0; i < categoriesSansDoublons.length; i++){
     filtresCategories.appendChild(liElement);
 }
 listenerCategories(works);
+
+/****************************************************La modale*********************************************/
+
+const modifyElement = document.getElementById("projets")
+modifyElement.innerHTML += `<a href class= "modify"><i class="fa-regular fa-pen-to-square"></i> modifier</a>`;
+const modifyGallery = document.querySelector(".modify");
+const modal = document.querySelector(".modal")
+modifyGallery.addEventListener("click" ,function(event){
+    event.preventDefault();
+     modal.style.display = "flex";
+     modalWorks(works);
+})
+// ********* le bouton fermer la modale *************
+const galleryElementModal = document.querySelector('.gallery-modal');
+const closeElements = document.querySelectorAll(".fa-xmark");
+
+closeElements.forEach(function (closeElement) {
+    closeElement.addEventListener("click", function(event){
+        event.preventDefault();
+        galleryElementModal.innerHTML = ""
+        modal.style.display = "none";
+        validatePhoto.style.display = "none"
+      
+    })
+})
+
+// ********** bouton ajouter une photo ***********
+const validatePhoto = document.querySelector(".modal-add-photo");
+const addElement = document.querySelector(".add-photo");
+addElement.addEventListener("click", function(event){
+    event.preventDefault();
+    validatePhoto.style.display = "flex";
+
+})
+
+
+ function modalWorks(works){
+    for (let i = 0 ; i < works.length ; i ++){
+        const modalImgElement = document.createElement("div");
+        const imgElement = document.createElement("img");
+        imgElement.src = works[i].imageUrl;
+        modalImgElement.appendChild(imgElement);
+        galleryElementModal.appendChild( modalImgElement);
+        modalImgElement.innerHTML += `<i class="fa-solid fa-trash-can"></i>`;
+     
+      }
+}
+
+
 
 /* *************************************FONCTIONS*************************************** */
 
@@ -86,3 +134,4 @@ function checkToken(){
  
     }
 }
+
