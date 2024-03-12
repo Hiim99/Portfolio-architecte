@@ -65,18 +65,20 @@
 			</div>
             <h1 class="modal-title">Ajout photo</h1>
 			<form class="add-photo-form">
-				<div class="add-photo-card">
-					<i class="fa-regular fa-image"></i>
-                    <button class="add-photo-button"> + Ajouter photo </button>
-					<p>jpg,png : 4mo max</p>
+				<div class="upload-photo-block">
+					<div class="add-photo-card">
+						<i class="fa-regular fa-image"></i>
+						<input id="add" type="file" name="image" accept="image/*"> 
+						<button type="button" class="add-photo-button">+ Ajouter photo</button>
+						<p>jpg,png : 4mo max</p>
+					</div>	
+					<img src="" id="preview">
 				</div>
 				<label for="title">Titre</label>
-				<input type="text" name="title" id="input-title">
+				<input type="text" name="title" id="input-title" required>
 				<label for="title">Catégorie</label>
-				<select id="categories-dropdown" name="categories">
-					<option>
+				<select id="categories-dropdown" name="categories" required>
 
-					</option>
 				</select>
 			</form>
 			<hr class="lign">

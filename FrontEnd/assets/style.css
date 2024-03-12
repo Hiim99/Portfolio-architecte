@@ -265,9 +265,10 @@ footer nav ul {
 }
 .modify{
 	text-decoration: none;
-	color: #1D6154;
-	font-size: 15px;
+	color: #050605;
+	font-size: 10px;
 	margin-left: 20px;
+	display: none;
 }
 
 /* ************************************ La modale ************************************/
@@ -332,7 +333,7 @@ footer nav ul {
 .lign{
 	width: 70%;
 	color:#DCDCDC ;
-	margin-top: 30%;
+	margin-top: 10%;
 }
 .add-photo{
 	display: flex;
@@ -380,8 +381,11 @@ footer nav ul {
 	font-size: 15px;
 	cursor: pointer;
 }
-.modal-add-photo-wrapper hr{
-    margin-top: 10%;
+#preview{
+	width: 110px;
+	height: 150px;
+	display: none;
+
 }
 
 .add-photo-form {
@@ -402,13 +406,19 @@ footer nav ul {
 	margin-top: 25px;
 	display: flex;
 	flex-direction: column;
-	background-color:#e8f1f6;
+	
 	width: 97%;
 	height: 100px;
 	padding: 10px 5px;
 	align-items: center;
 	justify-content: center;
 
+}
+.upload-photo-block{
+	background-color:#e8f1f6;
+}
+.fa-trash-can{
+	cursor: pointer;
 }
 .fa-image{
 	color: #cbd6db;;

@@ -1,6 +1,11 @@
 const response = await fetch ("http://localhost:5678/api/works");
 const works = await response.json();
 const myLogin = document.querySelector("#login");
+const monToken = window.localStorage.getItem('token');
+const dropdownCategoryElement = document.getElementById("categories-dropdown");
+const modifyElement = document.getElementById("projets");
+modifyElement.innerHTML += `<a href class= "modify"><i class="fa-regular fa-pen-to-square"></i> modifier</a>`;
+const modifyGallery = document.querySelector(".modify");
 myLogin.addEventListener("click" , function(event){
     if (myLogin.innerText == "login"){
         window.location.href = "login.html"
@@ -34,52 +39,90 @@ for (let i = 0; i < categoriesSansDoublons.length; i++){
 listenerCategories(works);
 
 /****************************************************La modale*********************************************/
-
-const modifyElement = document.getElementById("projets")
-modifyElement.innerHTML += `<a href class= "modify"><i class="fa-regular fa-pen-to-square"></i> modifier</a>`;
-const modifyGallery = document.querySelector(".modify");
 const modal = document.querySelector(".modal")
 modifyGallery.addEventListener("click" ,function(event){
     event.preventDefault();
      modal.style.display = "flex";
      modalWorks(works);
 })
-// ********* le bouton fermer la modale *************
+
+// ********** bouton ajouter une photo dans la première page de la modale ***********
+
+const validatePhoto = document.querySelector(".modal-add-photo");
+const addElement = document.querySelector(".add-photo");
+addElement.addEventListener("click", function(event){
+    event.preventDefault();
+    validatePhoto.style.display = "flex";
+    fetch("http://localhost:5678/api/categories").then(
+        async response => {
+            const categories = await response.json();
+            for (let i = 0; i < categories.length; i++){
+                const optionElement = document.createElement("option");
+                optionElement.dataset.id = categories[i].id;
+                optionElement.textContent = categories[i].name;
+                dropdownCategoryElement.appendChild(optionElement);
+            }
+        }
+    )
+})
+
+// ********** bouton ajouter une photo dans la deuxième page de la modale ***********
+
+document.querySelector(".add-photo-button").addEventListener('click', function() {
+    document.getElementById('add').click();
+    var imageFile = document.getElementById('add');
+    imageFile.addEventListener("change", function() {
+        changeImage(this);
+        
+      });     
+});
+
+
+// ********* fermer la modale *************
 const galleryElementModal = document.querySelector('.gallery-modal');
 const closeElements = document.querySelectorAll(".fa-xmark");
 
 closeElements.forEach(function (closeElement) {
     closeElement.addEventListener("click", function(event){
         event.preventDefault();
-        galleryElementModal.innerHTML = ""
+        galleryElementModal.innerHTML = "";
+        dropdownCategoryElement.innerHTML = "";
         modal.style.display = "none";
-        validatePhoto.style.display = "none"
+        validatePhoto.style.display = "none";
       
     })
 })
-
-// ********** bouton ajouter une photo ***********
-const validatePhoto = document.querySelector(".modal-add-photo");
-const addElement = document.querySelector(".add-photo");
-addElement.addEventListener("click", function(event){
-    event.preventDefault();
-    validatePhoto.style.display = "flex";
-
+// ********************Revenir en arrière dans la modale ******************************
+const backElement = document.querySelector(".fa-arrow-left");
+backElement.addEventListener("click", function(){
+    validatePhoto.style.display = "none";
+    dropdownCategoryElement.innerHTML = "";
 })
 
+// ******************* Valider l'ajout de la photo *********************************
 
- function modalWorks(works){
-    for (let i = 0 ; i < works.length ; i ++){
-        const modalImgElement = document.createElement("div");
-        const imgElement = document.createElement("img");
-        imgElement.src = works[i].imageUrl;
-        modalImgElement.appendChild(imgElement);
-        galleryElementModal.appendChild( modalImgElement);
-        modalImgElement.innerHTML += `<i class="fa-solid fa-trash-can"></i>`;
-     
-      }
-}
+const validateElement = document.querySelector(".validate-photo-btn");
+validateElement.addEventListener("click", async function(){
+    const uploadedphotoValue = document.getElementById("preview").src;
+    const workTitle = document.getElementById("input-title").value;
+    const workCategories = document.getElementById("categories-dropdown").value;
+   
+    const payload = JSON.stringify({
+        "image" : uploadedphotoValue,
+        "title" : workTitle,
+        "category" : workCategories
+    })
+    const response = await fetch("http://localhost:5678/api/works", {
+        "method": "POST",
+        "headers": { 
+            "Accept": "application/json",
+            "Content-Type": "multipart/form-data",
+            "Authorization" : `Bearer ${monToken}`
+        },
+        "body": payload
+    });
 
+})
 
 
 /* *************************************FONCTIONS*************************************** */
@@ -105,7 +148,6 @@ function listenerCategories(works){
     }
 }
 
-
 function populateWorks(works){
     const galleryElement = document.querySelector(".gallery");
     galleryElement.innerHTML = ""
@@ -126,12 +168,58 @@ function populateWorks(works){
 }
 
 function checkToken(){
-    const monToken = window.localStorage.getItem('token')
     if (monToken === null){
         myLogin.innerText = 'login'
     }else {
         myLogin.innerText= "logout"
- 
+        modifyGallery.style.display = "inline"
     }
 }
 
+function changeImage(input) {
+    var reader;
+    var previewElement = document.getElementById("preview");
+    const cardElement = document.querySelector(".add-photo-card");
+  
+    if (input.files && input.files[0]) {
+        console.log(input.files)
+      reader = new FileReader();
+  
+      reader.onload = function(e) {
+        previewElement.setAttribute('src', e.target.result);
+        cardElement.style.display = "none";
+        previewElement.style.display = "inline";    
+      }
+  
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+
+ function modalWorks(works){
+    for (let i = 0 ; i < works.length ; i ++){
+        const modalImgElement = document.createElement("div");
+        const imgElement = document.createElement("img");
+        imgElement.src = works[i].imageUrl;
+        modalImgElement.appendChild(imgElement);
+        galleryElementModal.appendChild( modalImgElement);
+        modalImgElement.innerHTML += `<i class="fa-solid fa-trash-can" id ="${works[i].id}"></i>`;  
+        modalImgElement.setAttribute("id", works[i].id);
+    }
+      // **************** Supprimer les travaux **************** 
+    const deleteElement = document.querySelector(".fa-trash-can")
+    deleteElement.addEventListener("click", function(event){
+        fetch(`http://localhost:5678/api/works/${event.target.id}` ,{ 
+            method: 'DELETE',
+            headers:{
+                'Authorization' : `Bearer ${monToken}`
+            }  
+        }).then((response)=>{
+            if(response.status == "204"){
+                document.getElementById(event.target.id).remove();
+
+            }
+        })
+
+})
+}
