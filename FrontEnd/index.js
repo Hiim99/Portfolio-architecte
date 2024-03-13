@@ -1,5 +1,6 @@
 const response = await fetch ("http://localhost:5678/api/works");
 const works = await response.json();
+const formData = new FormData();
 const myLogin = document.querySelector("#login");
 const monToken = window.localStorage.getItem('token');
 const dropdownCategoryElement = document.getElementById("categories-dropdown");
@@ -48,11 +49,12 @@ modifyGallery.addEventListener("click" ,function(event){
 
 // ********** bouton ajouter une photo dans la première page de la modale ***********
 
-const validatePhoto = document.querySelector(".modal-add-photo");
+const validatePhotoModal = document.querySelector(".modal-add-photo");
 const addElement = document.querySelector(".add-photo");
 addElement.addEventListener("click", function(event){
+    dropdownCategoryElement.innerHTML = "";
     event.preventDefault();
-    validatePhoto.style.display = "flex";
+    validatePhotoModal.style.display = "flex";
     fetch("http://localhost:5678/api/categories").then(
         async response => {
             const categories = await response.json();
@@ -78,6 +80,7 @@ document.querySelector(".add-photo-button").addEventListener('click', function()
 });
 
 
+
 // ********* fermer la modale *************
 const galleryElementModal = document.querySelector('.gallery-modal');
 const closeElements = document.querySelectorAll(".fa-xmark");
@@ -85,47 +88,56 @@ const closeElements = document.querySelectorAll(".fa-xmark");
 closeElements.forEach(function (closeElement) {
     closeElement.addEventListener("click", function(event){
         event.preventDefault();
-        galleryElementModal.innerHTML = "";
-        dropdownCategoryElement.innerHTML = "";
         modal.style.display = "none";
-        validatePhoto.style.display = "none";
+        validatePhotoModal.style.display = "none";
       
     })
 })
 // ********************Revenir en arrière dans la modale ******************************
 const backElement = document.querySelector(".fa-arrow-left");
 backElement.addEventListener("click", function(){
-    validatePhoto.style.display = "none";
-    dropdownCategoryElement.innerHTML = "";
+    validatePhotoModal.style.display = "none";
 })
 
 // ******************* Valider l'ajout de la photo *********************************
 
 const validateElement = document.querySelector(".validate-photo-btn");
 validateElement.addEventListener("click", async function(){
-    const uploadedphotoValue = document.getElementById("preview").src;
     const workTitle = document.getElementById("input-title").value;
-    const workCategories = document.getElementById("categories-dropdown").value;
+    const workCategories = document.getElementById("categories-dropdown");
+    const idOfSelectedDropdown = workCategories.options[workCategories.selectedIndex].getAttribute("data-id");
    
-    const payload = JSON.stringify({
-        "image" : uploadedphotoValue,
-        "title" : workTitle,
-        "category" : workCategories
-    })
-    const response = await fetch("http://localhost:5678/api/works", {
+    formData.append("title" , workTitle);
+    formData.append("category", idOfSelectedDropdown);
+   fetch("http://localhost:5678/api/works", {
+       
         "method": "POST",
         "headers": { 
             "Accept": "application/json",
-            "Content-Type": "multipart/form-data",
             "Authorization" : `Bearer ${monToken}`
         },
-        "body": payload
+        "body": formData
+    }).then(function(response){
+        return response.json();
+    }).then(function(work){
+        works.push(work);
+        modal.style.display = "none";
+        validatePhotoModal.style.display = "none";
+
+        populateWorks(works);
     });
-
 })
-
+window.onclick = function(event) {
+    if (event.target == modal || event.target == validatePhotoModal) {
+        modal.style.display = "none";
+        validatePhotoModal.style.display = "none";;
+    
+    }
+  }
 
 /* *************************************FONCTIONS*************************************** */
+
+// ********************************* fonction pour filtrer les travaux *************************
 
 function listenerCategories(works){
     const categoriesElements = document.querySelectorAll(".mesCategories li button")
@@ -182,7 +194,7 @@ function changeImage(input) {
     const cardElement = document.querySelector(".add-photo-card");
   
     if (input.files && input.files[0]) {
-        console.log(input.files)
+      formData.append("image" , input.files[0]);
       reader = new FileReader();
   
       reader.onload = function(e) {
@@ -195,9 +207,13 @@ function changeImage(input) {
     }
   }
 
-
+  function removeWorkWithId(works, id) {
+    return works.filter((work) => work.id !== parseInt(id));
+  }
  function modalWorks(works){
+    galleryElementModal.innerHTML = "";
     for (let i = 0 ; i < works.length ; i ++){
+      
         const modalImgElement = document.createElement("div");
         const imgElement = document.createElement("img");
         imgElement.src = works[i].imageUrl;
@@ -207,19 +223,22 @@ function changeImage(input) {
         modalImgElement.setAttribute("id", works[i].id);
     }
       // **************** Supprimer les travaux **************** 
-    const deleteElement = document.querySelector(".fa-trash-can")
-    deleteElement.addEventListener("click", function(event){
-        fetch(`http://localhost:5678/api/works/${event.target.id}` ,{ 
-            method: 'DELETE',
-            headers:{
-                'Authorization' : `Bearer ${monToken}`
-            }  
-        }).then((response)=>{
-            if(response.status == "204"){
-                document.getElementById(event.target.id).remove();
-
-            }
-        })
-
-})
+    const deleteElements = document.querySelectorAll(".fa-trash-can");
+    deleteElements.forEach(function(deleteElement){
+        deleteElement.addEventListener("click", function(event){
+            fetch(`http://localhost:5678/api/works/${event.target.id}` ,{ 
+                method: 'DELETE',
+                headers:{
+                    'Authorization' : `Bearer ${monToken}`
+                }  
+            }).then((response)=>{
+                if(response.status == "204"){
+                    document.getElementById(event.target.id).remove();
+                    works = removeWorkWithId(works , event.target.id);
+                    populateWorks(works);
+                }
+            })
+    })
+    })
+   
 }
