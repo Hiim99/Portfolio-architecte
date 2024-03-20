@@ -1,11 +1,13 @@
 const response = await fetch ("http://localhost:5678/api/works");
-const works = await response.json();
-const formData = new FormData();
+let works = await response.json();
+let formData = new FormData();
 const myLogin = document.querySelector("#login");
 const monToken = window.localStorage.getItem('token');
 const dropdownCategoryElement = document.getElementById("categories-dropdown");
 const modifyElement = document.getElementById("projets");
 modifyElement.innerHTML += `<a href class= "modify"><i class="fa-regular fa-pen-to-square"></i> modifier</a>`;
+var previewElement = document.getElementById("preview");
+const cardElement = document.querySelector(".add-photo-card");
 const modifyGallery = document.querySelector(".modify");
 myLogin.addEventListener("click" , function(event){
     if (myLogin.innerText == "login"){
@@ -19,7 +21,7 @@ window.addEventListener("storage", (event) => {
     checkToken();
 });
 checkToken();
-populateWorks(works);
+populateWorks();
 
 
 const listCategories = works.map(function(a){
@@ -70,10 +72,10 @@ addElement.addEventListener("click", function(event){
 
 // ********** bouton ajouter une photo dans la deuxième page de la modale ***********
 
+var imageFileElement = document.getElementById('add');
 document.querySelector(".add-photo-button").addEventListener('click', function() {
-    document.getElementById('add').click();
-    var imageFile = document.getElementById('add');
-    imageFile.addEventListener("change", function() {
+    imageFileElement.click();
+    imageFileElement.addEventListener("change", function() {
         changeImage(this);
         
       });     
@@ -103,29 +105,40 @@ backElement.addEventListener("click", function(){
 
 const validateElement = document.querySelector(".validate-photo-btn");
 validateElement.addEventListener("click", async function(){
+    formData = new FormData();
     const workTitle = document.getElementById("input-title").value;
     const workCategories = document.getElementById("categories-dropdown");
     const idOfSelectedDropdown = workCategories.options[workCategories.selectedIndex].getAttribute("data-id");
    
-    formData.append("title" , workTitle);
-    formData.append("category", idOfSelectedDropdown);
-   fetch("http://localhost:5678/api/works", {
-       
-        "method": "POST",
-        "headers": { 
-            "Accept": "application/json",
-            "Authorization" : `Bearer ${monToken}`
-        },
-        "body": formData
-    }).then(function(response){
-        return response.json();
-    }).then(function(work){
-        works.push(work);
-        modal.style.display = "none";
-        validatePhotoModal.style.display = "none";
 
-        populateWorks(works);
-    });
+    if(workTitle && storedImage){
+        formData.append("image", storedImage);
+        formData.append("title" , workTitle);
+        formData.append("category", idOfSelectedDropdown);
+        fetch("http://localhost:5678/api/works", {
+        
+            "method": "POST",
+            "headers": { 
+                "Accept": "application/json",
+                "Authorization" : `Bearer ${monToken}`
+            },
+            "body": formData
+        }).then(function(response){
+            return response.json();
+        }).then(function(work){
+            works.push(work);
+            modal.style.display = "none";
+            validatePhotoModal.style.display = "none";
+            populateWorks();
+
+            document.querySelector(".add-photo-form").reset();
+            cardElement.style.display = "flex";
+            previewElement.style.display = "none"; 
+            storedImage = null;
+        });
+    }
+    
+  
 })
 window.onclick = function(event) {
     if (event.target == modal || event.target == validatePhotoModal) {
@@ -138,39 +151,39 @@ window.onclick = function(event) {
 /* *************************************FONCTIONS*************************************** */
 
 // ********************************* fonction pour filtrer les travaux *************************
-
-function listenerCategories(works){
+function listenerCategories(){
     const categoriesElements = document.querySelectorAll(".mesCategories li button")
-
-
     for (let i = 0; i < categoriesElements.length; i++) {
     
         categoriesElements[i].addEventListener("click", function (event) {
             const id = event.target.dataset.id;
             if (id == 0) {
-                populateWorks(works)
+                populateWorks()
             }else{
-                const worksfiltres = works.filter(function(a){
-                    return a.categoryId == id 
-            })
-                populateWorks(worksfiltres);
+               
+                populateWorks(id);
             }
             
         })
     }
 }
 
-function populateWorks(works){
+function populateWorks(categoryId){
+    let finalWorks = works;
+    if(categoryId){
+        finalWorks = works.filter(function(a){
+            return a.categoryId == categoryId })
+    }
     const galleryElement = document.querySelector(".gallery");
     galleryElement.innerHTML = ""
-    for (let i = 0 ; i < works.length ; i ++){
+    for (let i = 0 ; i < finalWorks.length ; i ++){
       const figureElement = document.createElement("figure");
       const imgElement = document.createElement("img");
       const figCaptionElement = document.createElement("figcaption");
       
-      imgElement.src = works[i].imageUrl;
-      imgElement.alt = works[i].title;
-      figCaptionElement.textContent = works[i].title
+      imgElement.src = finalWorks[i].imageUrl;
+      imgElement.alt = finalWorks[i].title;
+      figCaptionElement.textContent = finalWorks[i].title
       
       figureElement.appendChild(imgElement);
       figureElement.appendChild(figCaptionElement);
@@ -187,30 +200,27 @@ function checkToken(){
         modifyGallery.style.display = "inline"
     }
 }
-
+let storedImage ;
 function changeImage(input) {
     var reader;
-    var previewElement = document.getElementById("preview");
-    const cardElement = document.querySelector(".add-photo-card");
-  
     if (input.files && input.files[0]) {
-      formData.append("image" , input.files[0]);
-      reader = new FileReader();
+        storedImage = input.files[0]
+        reader = new FileReader();
   
-      reader.onload = function(e) {
-        previewElement.setAttribute('src', e.target.result);
-        cardElement.style.display = "none";
-        previewElement.style.display = "inline";    
-      }
+        reader.onload = function(e) {
+            previewElement.setAttribute('src', e.target.result);
+            cardElement.style.display = "none";
+            previewElement.style.display = "inline";    
+        }
   
-      reader.readAsDataURL(input.files[0]);
+        reader.readAsDataURL(input.files[0]);
     }
   }
 
-  function removeWorkWithId(works, id) {
-    return works.filter((work) => work.id !== parseInt(id));
+  function removeWorkWithId(id) {
+    works =  works.filter((work) => work.id !== parseInt(id));
   }
- function modalWorks(works){
+ function modalWorks(){
     galleryElementModal.innerHTML = "";
     for (let i = 0 ; i < works.length ; i ++){
       
@@ -222,6 +232,7 @@ function changeImage(input) {
         modalImgElement.innerHTML += `<i class="fa-solid fa-trash-can" id ="${works[i].id}"></i>`;  
         modalImgElement.setAttribute("id", works[i].id);
     }
+
       // **************** Supprimer les travaux **************** 
     const deleteElements = document.querySelectorAll(".fa-trash-can");
     deleteElements.forEach(function(deleteElement){
@@ -234,8 +245,8 @@ function changeImage(input) {
             }).then((response)=>{
                 if(response.status == "204"){
                     document.getElementById(event.target.id).remove();
-                    works = removeWorkWithId(works , event.target.id);
-                    populateWorks(works);
+                    removeWorkWithId(event.target.id);
+                    populateWorks();
                 }
             })
     })
