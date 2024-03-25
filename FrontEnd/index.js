@@ -92,6 +92,10 @@ closeElements.forEach(function (closeElement) {
         event.preventDefault();
         modal.style.display = "none";
         validatePhotoModal.style.display = "none";
+        document.querySelector(".add-photo-form").reset();
+        cardElement.style.display = "flex";
+        previewElement.style.display = "none"; 
+        storedImage = null;
       
     })
 })
