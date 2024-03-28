@@ -20,7 +20,7 @@ myForm.addEventListener("submit", async function(event){
     
     switch (response.status){
          
-        case 404:  alert("Utilisateur introuvable");
+        case 404:  alert("Email ou mot de passe incorrect");
                    break;
         case 401 : alert ("Email ou mot de passe incorrect");
                    break;

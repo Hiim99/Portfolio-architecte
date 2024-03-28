@@ -106,6 +106,16 @@ backElement.addEventListener("click", function(){
 })
 
 // ******************* Valider l'ajout de la photo *********************************
+const formElement = document.querySelector(".add-photo-form");
+formElement.addEventListener("change", function(){
+    const workTitle = document.getElementById("input-title").value;
+    if(workTitle && storedImage){
+        validateElement.style.backgroundColor = "#1D6154" ;
+    }
+    else {
+        validateElement.style.backgroundColor = "#cbd6db" ;
+    }
+})
 
 const validateElement = document.querySelector(".validate-photo-btn");
 validateElement.addEventListener("click", async function(){
@@ -116,6 +126,7 @@ validateElement.addEventListener("click", async function(){
    
 
     if(workTitle && storedImage){
+   
         formData.append("image", storedImage);
         formData.append("title" , workTitle);
         formData.append("category", idOfSelectedDropdown);
@@ -134,8 +145,7 @@ validateElement.addEventListener("click", async function(){
             modal.style.display = "none";
             validatePhotoModal.style.display = "none";
             populateWorks();
-
-            document.querySelector(".add-photo-form").reset();
+            formElement.reset()
             cardElement.style.display = "flex";
             previewElement.style.display = "none"; 
             storedImage = null;
