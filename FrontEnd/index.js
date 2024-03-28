@@ -93,6 +93,7 @@ closeElements.forEach(function (closeElement) {
         modal.style.display = "none";
         validatePhotoModal.style.display = "none";
         document.querySelector(".add-photo-form").reset();
+        validateElement.style.backgroundColor = "#cbd6db"
         cardElement.style.display = "flex";
         previewElement.style.display = "none"; 
         storedImage = null;
@@ -146,6 +147,7 @@ validateElement.addEventListener("click", async function(){
             validatePhotoModal.style.display = "none";
             populateWorks();
             formElement.reset()
+            validateElement.style.backgroundColor = "#cbd6db"
             cardElement.style.display = "flex";
             previewElement.style.display = "none"; 
             storedImage = null;
